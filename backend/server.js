@@ -4,15 +4,23 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 10000;
 
 app.use(cors());
 app.use(express.json());
 
+// --- ADD THIS TRANSPORTER BLOCK ---
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // or your preferred service
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS, // This should be an App Password, not your login password
+  },
+});
+
 app.post('/api/send-email', async (req, res) => {
   const { name, email, message } = req.body;
-  console.log("Received data:", { name, email, message });
-
+  
   try {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -23,12 +31,12 @@ app.post('/api/send-email', async (req, res) => {
 
     res.status(200).json({ success: true, message: 'Message sent!' });
   } catch (err) {
-    console.error("Email sending failed:", err);  // <-- THIS WILL HELP US
+    console.error("Email sending failed:", err);
     res.status(500).json({ success: false, message: 'Failed to send message' });
   }
 });
 
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+// Adding 0.0.0.0 is perfect for Render
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
