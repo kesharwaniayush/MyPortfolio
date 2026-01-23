@@ -203,3 +203,15 @@ body {
     font-size: 0.75rem;
   }
 }
+.status-message {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.status-message {
+  background-color: #4caf50;
+  color: white;
+}

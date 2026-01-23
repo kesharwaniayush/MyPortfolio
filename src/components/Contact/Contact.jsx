@@ -1,8 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Contact.css';
 import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaGithub, FaLinkedin, FaCode, FaPaperPlane } from 'react-icons/fa';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState('');
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus('');
+
+    try {
+      const response = await fetch('https://myportfolio-gjct.onrender.com/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus('Message sent successfully!');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        setStatus('Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setStatus('Error sending message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="contact-container">
       {/* Message Form */}
@@ -17,25 +62,54 @@ const Contact = () => {
           <p className="command-line">$ compose --new-message</p>
           <h2>SEND_MESSAGE</h2>
 
-          <div className="input-group-row">
-            <div className="input-field">
-              <p className="command-line">$ input --name</p>
-              <input type="text" placeholder="Ayush Kesharwani" />
+          <form onSubmit={handleSubmit}>
+            <div className="input-group-row">
+              <div className="input-field">
+                <p className="command-line">$ input --name</p>
+                <input 
+                  type="text" 
+                  name="name"
+                  placeholder="Ayush Kesharwani" 
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="input-field">
+                <p className="command-line">$ input --email</p>
+                <input 
+                  type="email" 
+                  name="email"
+                  placeholder="kesharwaniayush1207@gmail.com" 
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
-            <div className="input-field">
-              <p className="command-line">$ input --email</p>
-              <input type="email" placeholder="kesharwaniayush1207@gmail.com" />
+
+            <div className="input-field full">
+              <p className="command-line">$ input --message</p>
+              <textarea 
+                name="message"
+                placeholder="your_message_here..." 
+                rows={4}
+                value={formData.message}
+                onChange={handleChange}
+                required
+              />
             </div>
-          </div>
 
-          <div className="input-field full">
-            <p className="command-line">$ input --message</p>
-            <textarea placeholder="your_message_here..." rows={4} />
-          </div>
+            <button 
+              type="submit" 
+              className="send-button"
+              disabled={loading}
+            >
+              <FaPaperPlane /> {loading ? 'Sending...' : './send_message'}
+            </button>
 
-          <button className="send-button">
-            <FaPaperPlane /> ./send_message
-          </button>
+            {status && <p className="status-message">{status}</p>}
+          </form>
         </div>
       </div>
 
