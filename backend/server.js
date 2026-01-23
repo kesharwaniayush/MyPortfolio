@@ -41,7 +41,7 @@ app.post('/api/send-email', async (req, res) => {
 });
 
 // Serve the React app for all other routes (client-side routing)
-app.get('*', (req, res) => {
+app.get(/^\/(?!api\/).*/, (req, res) => {
   res.sendFile(path.join(__dirname, '../build/index.html'));
 });
 
