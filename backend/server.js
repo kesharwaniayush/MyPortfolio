@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -8,6 +9,9 @@ const PORT = process.env.PORT || 10000;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from the build directory
+app.use(express.static(path.join(__dirname, '../build')));
 
 // --- ADD THIS TRANSPORTER BLOCK ---
 const transporter = nodemailer.createTransport({
@@ -34,6 +38,11 @@ app.post('/api/send-email', async (req, res) => {
     console.error("Email sending failed:", err);
     res.status(500).json({ success: false, message: 'Failed to send message' });
   }
+});
+
+// Serve the React app for all other routes (client-side routing)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../build/index.html'));
 });
 
 // Adding 0.0.0.0 is perfect for Render
