@@ -25,7 +25,7 @@ const Contact = () => {
     setStatus('');
 
     try {
-      const response = await fetch('https://myportfolio-gjct.onrender.com/api/send-email', {
+      const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
