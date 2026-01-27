@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: myportfolio-backend
+    name: myportfolio
     runtime: node
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: npm start
+    rootDir: .
+    buildCommand: npm install && npm run build && cd backend && npm install
+    startCommand: node backend/server.js
     envVars:
       - key: PORT
         value: 10000
@@ -14,3 +14,4 @@ services:
         sync: false
       - key: TO_EMAIL
         sync: false
+
