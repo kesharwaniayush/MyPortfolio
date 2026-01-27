@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from the build directory
-app.use(express.static(path.join(__dirname, '../../build')));
+app.use(express.static(path.join(__dirname, '../build')));
 
 // --- ADD THIS TRANSPORTER BLOCK ---
 const transporter = nodemailer.createTransport({
@@ -42,7 +42,7 @@ app.post('/api/send-email', async (req, res) => {
 
 // Serve the React app for all other routes (client-side routing)
 app.get(/^\/(?!api\/).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../../build/index.html'));
+  res.sendFile(path.join(__dirname, '../build/index.html'));
 });
 
 // Adding 0.0.0.0 is perfect for Render
